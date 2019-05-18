@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json.Linq;
 
 namespace Matrix.EmojiTracker.Database.SynapseModels
 {
@@ -15,9 +16,12 @@ namespace Matrix.EmojiTracker.Database.SynapseModels
         public string InternalMetadata { get; set; }
 
         [Column("json")]
-        public string Json { get; set; }
+        public string RawJson { get; set; }
 
         [Column("format_version")]
         public int FormatVersion { get; set; }
+
+        [NotMapped]
+        public JObject Json => JObject.Parse(RawJson);
     }
 }

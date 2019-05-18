@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using Matrix.EmojiTracker.Common;
+using Matrix.EmojiTracker.Common.Emoji;
+using Matrix.EmojiTracker.Common.MatrixEvent;
 using Matrix.EmojiTracker.Database;
 using Matrix.SynapseInterop.Replication;
 using Matrix.SynapseInterop.Replication.DataRows;
@@ -48,15 +50,19 @@ namespace Matrix.EmojiTracker.Filter
 
         private static void Stream_DataRow(object sender, EventStreamRow e)
         {
+            if (e.Kind != EventStreamRow.RowKind.Event) return; // We don't parse state events
+            if (e.EventType != MatrixEventType.RoomMessage) return; // We don't parse non-messages (for now)
+
             using (var db = new SynapseDbContext(_config.GetConnectionString("synapse")))
             {
-                log.Information("Received event {0} ({1}) in {2}", e.EventId, e.EventType, e.RoomId);
                 var ev = db.EventsJson.SingleOrDefault(e2 => e2.RoomId == e.RoomId && e2.EventId == e.EventId);
+                if (ev == null) return;
 
-                if (ev != null)
-                    log.Information(ev.Json);
-                else
-                    log.Error("EVENT NOT FOUND");
+                var mtxEvent = new MessageEvent(ev.Json);
+                if (mtxEvent.MessageType != MessageEventType.Text && mtxEvent.MessageType != MessageEventType.Emote) return;
+
+                var emoji = mtxEvent.Body.GetEmoji();
+                log.Information("Found {0} emoji in {1}", emoji.Count(), e.EventId);
             }
         }
 
