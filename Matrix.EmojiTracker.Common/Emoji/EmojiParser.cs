@@ -5,9 +5,9 @@ namespace Matrix.EmojiTracker.Common.Emoji
 {
     public static class EmojiParser
     {
-        public static IEnumerable<string> GetEmoji(this string input)
+        public static IEnumerable<KeyValuePair<string, int>> GetEmoji(this string input)
         {
-            return EmojiData.KnownSymbols.Where(input.Contains);
+            return EmojiData.KnownSymbols.Select(s => new KeyValuePair<string, int>(s, input.CountOccurrences(s)));
         }
     }
 }

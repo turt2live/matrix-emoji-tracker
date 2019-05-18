@@ -62,7 +62,7 @@ namespace Matrix.EmojiTracker.Filter
                 if (mtxEvent.MessageType != MessageEventType.Text && mtxEvent.MessageType != MessageEventType.Emote) return;
 
                 var emoji = mtxEvent.Body.GetEmoji();
-                log.Information("Found {0} emoji in {1}", emoji.Count(), e.EventId);
+                log.Information("Found {0} emoji in {1}", emoji.Sum(p => p.Value), e.EventId);
             }
         }
 
