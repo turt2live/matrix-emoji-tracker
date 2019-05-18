@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Matrix.EmojiTracker.Common;
-using Matrix.EmojiTracker.Common.Emoji;
-using Matrix.EmojiTracker.Common.MatrixEvent;
 using Matrix.EmojiTracker.Database;
+using Matrix.EmojiTracker.Filter.EventParser;
 using Matrix.SynapseInterop.Replication;
 using Matrix.SynapseInterop.Replication.DataRows;
 using Microsoft.Extensions.Configuration;
@@ -52,35 +50,14 @@ namespace Matrix.EmojiTracker.Filter
         private static void Stream_DataRow(object sender, EventStreamRow e)
         {
             if (e.Kind != EventStreamRow.RowKind.Event) return; // We don't parse state events
-            if (e.EventType != MatrixEventType.RoomMessage && e.EventType != MatrixEventType.Reaction)
-                return; // We don't parse events which aren't visible
+            if (!EmojiEventParser.CanParse(e.EventType)) return;
 
             using (var db = new SynapseDbContext(_config.GetConnectionString("synapse")))
             {
                 var ev = db.EventsJson.SingleOrDefault(e2 => e2.RoomId == e.RoomId && e2.EventId == e.EventId);
                 if (ev == null) return;
 
-                IEnumerable<KeyValuePair<string, int>> emoji = new KeyValuePair<string, int>[0];
-                if (e.EventType == MatrixEventType.RoomMessage)
-                {
-                    var mtxEvent = new MessageEvent(ev.Json);
-                    if (mtxEvent.MessageType != MessageEventType.Text &&
-                        mtxEvent.MessageType != MessageEventType.Emote) return;
-
-                    emoji = mtxEvent.Body.GetEmoji();
-                }
-                else if (e.EventType == MatrixEventType.Reaction)
-                {
-                    var mtxEvent = new MatrixEvent(ev.Json);
-                    if (!mtxEvent.HasRelationship) return;
-
-                    var relationship = mtxEvent.Relationship;
-                    if (!relationship.IsV2Relation ||
-                        relationship.RelationType != EventRelationship.Annotation) return;
-
-                    emoji = relationship.AggregationKey.GetEmoji();
-                }
-
+                var emoji = EmojiEventParser.CountEmoji(e.EventType, ev);
                 log.Information("Found {0} emoji in {1}", emoji.Sum(p => p.Value), e.EventId);
             }
         }
