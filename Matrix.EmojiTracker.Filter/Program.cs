@@ -27,12 +27,14 @@ namespace Matrix.EmojiTracker.Filter
             Logger.Setup(_config.GetSection("Logging"));
             log = Log.ForContext<Program>();
 
-            StartReplicationAsync();
+            // TODO: Read stream position from database somewhere
+            string eventStreamPosition = StreamPosition.LATEST;
+            StartReplicationAsync(eventStreamPosition);
 
             Console.ReadKey(true);
         }
 
-        private static async void StartReplicationAsync()
+        private static async void StartReplicationAsync(string eventStreamPosition)
         {
             var replication = new SynapseReplication();
             replication.ClientName = "EmojiTracker_FilterProc";
@@ -43,7 +45,7 @@ namespace Matrix.EmojiTracker.Filter
             await replication.Connect(synapseConfig.GetValue<string>("replicationHost"),
                 synapseConfig.GetValue<int>("replicationPort"));
 
-            var stream = replication.BindStream<EventStreamRow>();
+            var stream = replication.ResumeStream<EventStreamRow>(eventStreamPosition);
             stream.DataRow += Stream_DataRow;
         }
 
