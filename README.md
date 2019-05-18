@@ -21,6 +21,10 @@ services (overpowered bots which get their own stream), Synapse currently doesn'
 the application service expects to receive a ton of events. Instead, the project hooks into the
 replication stream to get an unfiltered list of things the homeserver sees for processing.
 
+`Matrix.EmojiTracker.Persist` takes data off the central queue and persists it to the database. It 
+additionally periodically updates the cached values with an updated count, pushing the update to the 
+other clients.
+
 ## Running / Building
 
 TODO
