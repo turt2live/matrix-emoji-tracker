@@ -6,7 +6,24 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Matrix.SynapseInterop.Replication" Version="0.1.0" />
+    <PackageReference Include="Matrix.SynapseInterop.Replication" Version="0.2.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.2.4" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="2.2.4" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Matrix.EmojiTracker.Common\Matrix.EmojiTracker.Common.csproj" />
+    <ProjectReference Include="..\Matrix.EmojiTracker.Database\Matrix.EmojiTracker.Database.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.default.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
