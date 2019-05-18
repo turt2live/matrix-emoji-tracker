@@ -7,14 +7,14 @@ namespace Matrix.EmojiTracker.Common.MatrixEvent
     {
         public string MessageType
         {
-            get => ReadBase<string>("msgtype", Content);
-            set => WriteBase("msgtype", value, Content);
+            get => Content.GetValue<string>("msgtype");
+            set => Content.SetValue("msgtype", value);
         }
 
         public string Body
         {
-            get => ReadBase<string>("body", Content);
-            set => WriteBase("body", value, Content);
+            get => Content.GetValue<string>("body");
+            set => Content.SetValue("body", value);
         }
 
         public MessageEvent(JObject baseJson) : base(baseJson)

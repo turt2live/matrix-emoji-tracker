@@ -6,74 +6,67 @@ namespace Matrix.EmojiTracker.Common.MatrixEvent
     {
         protected JObject _baseEvent;
 
+        public JObject Raw => _baseEvent;
+
         public string Origin
         {
-            get => ReadBase<string>("origin");
-            set => WriteBase("origin", value);
+            get => _baseEvent.GetValue<string>("origin");
+            set => _baseEvent.SetValue("origin", value);
         }
 
         public string RoomId
         {
-            get => ReadBase<string>("room_id");
-            set => WriteBase("room_id", value);
+            get => _baseEvent.GetValue<string>("room_id");
+            set => _baseEvent.SetValue("room_id", value);
         }
 
         public string Sender
         {
-            get => ReadBase<string>("sender");
-            set => WriteBase("sender", value);
+            get => _baseEvent.GetValue<string>("sender");
+            set => _baseEvent.SetValue("sender", value);
         }
 
         public string EventId
         {
-            get => ReadBase<string>("event_id");
-            set => WriteBase("event_id", value);
+            get => _baseEvent.GetValue<string>("event_id");
+            set => _baseEvent.SetValue("event_id", value);
         }
+
+        public bool IsState => _baseEvent.ContainsKey("state_key");
 
         public string StateKey
         {
-            get => ReadBase<string>("state_key");
-            set => WriteBase("state_key", value);
+            get => _baseEvent.GetValue<string>("state_key");
+            set => _baseEvent.SetValue("state_key", value);
         }
 
         public long OriginServerTs
         {
-            get => ReadBase<long>("origin_server_ts");
-            set => WriteBase("origin_server_ts", value);
+            get => _baseEvent.GetValue<long>("origin_server_ts");
+            set => _baseEvent.SetValue("origin_server_ts", value);
         }
 
         public JObject Content
         {
-            get => ReadBase<JObject>("content");
-            set => WriteBase("content", value);
+            get => _baseEvent.GetValue<JObject>("content");
+            set => _baseEvent.SetValue("content", value);
         }
 
         public string EventType
         {
-            get => ReadBase<string>("type");
-            set => WriteBase("type", value);
+            get => _baseEvent.GetValue<string>("type");
+            set => _baseEvent.SetValue("type", value);
         }
 
-        public bool IsState => _baseEvent.ContainsKey("state_key");
+        public bool HasRelationship => Content.ContainsKey(EventRelationship.ContentKeyName);
+
+        public EventRelationship Relationship => new EventRelationship(this);
 
         public MatrixEvent() :this(new JObject()) { }
 
         public MatrixEvent(JObject baseJson)
         {
             _baseEvent = baseJson;
-        } 
-
-        protected T ReadBase<T>(string key, JObject obj=null)
-        {
-            if (obj == null) obj = _baseEvent;
-            return obj.GetValue(key).ToObject<T>();
-        }
-
-        protected void WriteBase(string key, object value, JObject obj = null)
-        {
-            if (obj == null) obj = _baseEvent;
-            if (obj.ContainsKey(key)) obj.Property(key).Remove();
-            obj.AddAfterSelf(new JProperty(key, value));
         }
     }
 }
