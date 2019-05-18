@@ -12,7 +12,8 @@ namespace Matrix.EmojiTracker.Filter.EventParser
             var mtxEvent = new MessageEvent(ev.Json);
 
             if (mtxEvent.MessageType != MessageEventType.Text &&
-                mtxEvent.MessageType != MessageEventType.Emote)
+                mtxEvent.MessageType != MessageEventType.Emote &&
+                mtxEvent.MessageType != MessageEventType.Notice)
                 return EmojiEventParser.NoEmojiCollection;
 
             return mtxEvent.Body.GetEmoji();

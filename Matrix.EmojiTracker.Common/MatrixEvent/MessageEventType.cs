@@ -3,6 +3,7 @@
     public static class MessageEventType
     {
         public static readonly string Text = "m.text";
+        public static readonly string Notice = "m.notice";
         public static readonly string Emote = "m.emote";
         public static readonly string Image = "m.image";
         public static readonly string Video = "m.video";
