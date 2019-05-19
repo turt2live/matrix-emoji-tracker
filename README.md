@@ -27,6 +27,10 @@ replication stream to get an unfiltered list of things the homeserver sees for p
 additionally periodically updates the cached values with an updated count, pushing the update to the 
 other clients.
 
+`Matrix.EmojiTracker.WebWorker` handles web client connections and aggregates updates for streaming
+over web sockets. In high-load environments, it is recommended to have multiple of these to spread 
+out the requests. This also serves the frontend and provides the simple API.
+
 ## Running / Building
 
 TODO
