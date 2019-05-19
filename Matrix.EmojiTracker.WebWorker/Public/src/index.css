@@ -1,0 +1,58 @@
+.header h3 {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+}
+
+.header a {
+    float: right;
+    vertical-align: text-bottom;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+.header {
+    padding: 20px;
+    border-bottom: 1px solid #ccc;
+    background-color: #fff;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    color: #222;
+    background-color: #fcfaff;
+}
+
+.error {
+    color: red;
+}
+
+.emoji-container {
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.emoji {
+    display: flex;
+    width: 140px;
+    border: 1px solid #aaa;
+    padding: 8px;
+}
+
+.emoji .symbol {
+    padding-right: 10px;
+}
+
+.emoji .symbol .emoji-img {
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    margin: 0;
+}

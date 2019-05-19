@@ -1,0 +1,38 @@
+{
+  "name": "matrix-emoji-tracker",
+  "version": "1.0.0",
+  "description": "Tracks emoji from Matrix messages",
+  "private": true,
+  "scripts": {
+    "build": "webpack --mode production",
+    "watch": "webpack -w --mode production"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/turt2live/matrix-emoji-tracker.git"
+  },
+  "keywords": [
+    "emoji",
+    "tracker",
+    "matrix"
+  ],
+  "author": "TravisR",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/turt2live/matrix-emoji-tracker/issues"
+  },
+  "homepage": "https://github.com/turt2live/matrix-emoji-tracker#readme",
+  "dependencies": {
+    "jquery": "^3.4.1",
+    "milligram": "^1.3.0"
+  },
+  "devDependencies": {
+    "clean-webpack-plugin": "^2.0.2",
+    "css-loader": "^2.1.1",
+    "html-webpack-plugin": "^3.2.0",
+    "mini-css-extract-plugin": "^0.6.0",
+    "style-loader": "^0.23.1",
+    "webpack": "^4.31.0",
+    "webpack-cli": "^3.3.2"
+  }
+}
