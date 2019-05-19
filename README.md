@@ -11,7 +11,9 @@ This is intended to be run against a high-traffic homeserver and is not built fo
 Visit [#emojitracker:t2bot.io](https://matrix.to/#/#emojitracker:t2bot.io) on Matrix for discussion and
 support.
 
+<!--
 t2bot.io's perspective of emoji can be seen at https://emoji.t2bot.io
+-->
 
 ## System components
 
