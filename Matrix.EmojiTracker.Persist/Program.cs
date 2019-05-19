@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
@@ -159,6 +159,13 @@ namespace Matrix.EmojiTracker.Persist
                     var reCount = long.Parse(reCountStr);
 
                     if (reCount == efCount) continue;
+
+                    if (reCount < efCount)
+                    {
+                        // Redis is wrong - fix it
+                        _redisDb.StringSet(emoji, efCount, flags: CommandFlags.FireAndForget);
+                        return;
+                    }
 
                     record.Count += (reCount - efCount);
                     changed = true;
