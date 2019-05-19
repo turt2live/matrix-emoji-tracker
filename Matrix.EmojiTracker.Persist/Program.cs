@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Matrix.EmojiTracker.Common;
@@ -95,18 +96,32 @@ namespace Matrix.EmojiTracker.Persist
                 {
                     try
                     {
-                        var cmd = IncrementQueue.Take();
+                        var firstCmd = IncrementQueue.Take();
+
+                        // Try and batch up a lot of the commands
+                        var commands = new List<IncrementCommand> { firstCmd };
+                        while (commands.Count < 1000 && IncrementQueue.Count > 0)
+                            commands.Add(IncrementQueue.Take());
+
+                        // Convert all the individual commands into aggregated updates
+                        var aggregated = commands
+                            .GroupBy(c => new {c.Emoji, c.SourceType})
+                            .Select(g => new IncrementCommand(){SourceType = g.Key.SourceType, Emoji = g.Key.Emoji, Amount = g.Sum(c => c.Amount)});
 
                         using (var db = new WorkerDb())
                         {
-                            var record = db.EmojiCounts.Find(cmd.Emoji, cmd.SourceType);
-                            if (record == null)
+                            foreach (var cmd in aggregated)
                             {
-                                log.Warning("No record for {0}/{1}", cmd.SourceType, cmd.Emoji);
-                                return;
+                                var record = db.EmojiCounts.Find(cmd.Emoji, cmd.SourceType);
+                                if (record == null)
+                                {
+                                    log.Warning("No record for {0}/{1}", cmd.SourceType, cmd.Emoji);
+                                    return;
+                                }
+
+                                record.Count += cmd.Amount;
                             }
 
-                            record.Count += cmd.Amount;
                             db.SaveChanges();
                         }
 
