@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Matrix.EmojiTracker.Databas
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Matrix.EmojiTracker.Persist", "Matrix.EmojiTracker.Persist\Matrix.EmojiTracker.Persist.csproj", "{7796C0EC-3350-47E8-B636-27267A02DCF7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Matrix.EmojiTracker.WebWorker", "Matrix.EmojiTracker.WebWorker\Matrix.EmojiTracker.WebWorker.csproj", "{459791A4-4083-400A-85A6-8573AA8FDA00}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +42,10 @@ Global
 		{7796C0EC-3350-47E8-B636-27267A02DCF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7796C0EC-3350-47E8-B636-27267A02DCF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7796C0EC-3350-47E8-B636-27267A02DCF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{459791A4-4083-400A-85A6-8573AA8FDA00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{459791A4-4083-400A-85A6-8573AA8FDA00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{459791A4-4083-400A-85A6-8573AA8FDA00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{459791A4-4083-400A-85A6-8573AA8FDA00}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
