@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Linq;
 using Matrix.EmojiTracker.Common;
 using Matrix.EmojiTracker.Common.PubSub;
 using Matrix.EmojiTracker.Database;
+using Matrix.EmojiTracker.Database.SynapseModels;
 using Matrix.EmojiTracker.Filter.EventParser;
 using Matrix.SynapseInterop.Replication;
 using Matrix.SynapseInterop.Replication.DataRows;
@@ -78,18 +79,19 @@ namespace Matrix.EmojiTracker.Filter
             if (e.Kind != EventStreamRow.RowKind.Event) return; // We don't parse state events
             if (!EmojiEventParser.CanParse(e.EventType)) return;
 
+            EventJson ev;
             using (var db = new SynapseDbContext(_config.GetConnectionString("synapse")))
             {
-                var ev = db.EventsJson.SingleOrDefault(e2 => e2.RoomId == e.RoomId && e2.EventId == e.EventId);
+                ev = db.EventsJson.FirstOrDefault(e2 => e2.RoomId == e.RoomId && e2.EventId == e.EventId);
                 if (ev == null) return;
+            }
 
-                var emoji = EmojiEventParser.CountEmoji(e.EventType, ev).Where(c => c.Value > 0);
-                foreach (var pair in emoji)
-                {
-                    log.Information("Found {0} instances of {1} emoji in type {2}", pair.Value, pair.Key, e.EventType);
-                    _redis.GetSubscriber().PublishAsync(EmojiChannel.IncrementCommands, IncrementCommand.Make(pair.Key, pair.Value, e.EventType));
-                    _redisDb.StringIncrementAsync(pair.Key, pair.Value, CommandFlags.FireAndForget);
-                }
+            var emoji = EmojiEventParser.CountEmoji(e.EventType, ev).Where(c => c.Value > 0);
+            foreach (var pair in emoji)
+            {
+                log.Information("Found {0} instances of {1} emoji in type {2}", pair.Value, pair.Key, e.EventType);
+                _redis.GetSubscriber().PublishAsync(EmojiChannel.IncrementCommands, IncrementCommand.Make(pair.Key, pair.Value, e.EventType));
+                _redisDb.StringIncrementAsync(pair.Key, pair.Value, CommandFlags.FireAndForget);
             }
         }
 
