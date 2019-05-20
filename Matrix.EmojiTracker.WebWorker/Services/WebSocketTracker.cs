@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using System.Linq;
 
 namespace Matrix.EmojiTracker.WebWorker.Services
 {
@@ -19,9 +20,11 @@ namespace Matrix.EmojiTracker.WebWorker.Services
             return Task.Delay(-1, token);
         }
 
-        public static async void BroadcastEmojiChange(string emoji, int delta)
+        public static async void BroadcastEmojiChanges(KeyValuePair<string,int>[] changes)
         {
-            var message = $"{emoji}|{delta}";
+            if (changes.Length == 0) return;
+
+            var message = string.Join("|", changes.SelectMany(p => new []{p.Key,p.Value.ToString()}).ToArray());
             var buf = new ArraySegment<byte>(Encoding.UTF8.GetBytes(message));
 
             var toRemove = new List<Tuple<WebSocket, CancellationToken>>();
