@@ -71,8 +71,9 @@ function renderEmoji() {
 
 function updateCount(symbol, count) {
     if (!SELECTORS_CACHE[symbol]) {
+        var parentSelector = document.getElementById("emoji-" + symbol);
         var selector = null;
-        var children = document.getElementById("emoji-" + symbol).childNodes;
+        var children = parentSelector.childNodes;
         for (var child of children) {
             if (child.className === 'count') {
                 selector = child;
@@ -80,9 +81,27 @@ function updateCount(symbol, count) {
             }
         }
         if (!selector) return;
-        SELECTORS_CACHE[symbol] = selector;
+        SELECTORS_CACHE[symbol] = {
+            parent: parentSelector,
+            child: selector,
+        };
     }
-    SELECTORS_CACHE[symbol].textContent = count;
+
+    // Update the count
+    SELECTORS_CACHE[symbol].child.textContent = count;
+
+    // Animate
+    var parent = SELECTORS_CACHE[symbol].parent;
+    var classes = parent.className;
+    if (classes.indexOf("animated") === -1) {
+        classes = classes + " animated-1";
+    }
+    if (classes.endsWith("1")) {
+        classes = classes.substring(0, classes.length - 1) + "2";
+    } else {
+        classes = classes.substring(0, classes.length - 1) + "1";
+    }
+    parent.className = classes;
 }
 
 function renderEmojiElement(symbol, count) {

@@ -39,6 +39,25 @@ body {
     justify-content: center;
 }
 
+@keyframes emoji_background {
+    0% {
+        background-color: #9b4dca;
+    }
+
+    100% {
+        background-color: transparent;
+    }
+}
+@keyframes emoji_background_alt {
+    0% {
+        background-color: #9b4dca;
+    }
+
+    100% {
+        background-color: transparent;
+    }
+}
+
 .emoji {
     display: flex;
     width: 140px;
@@ -46,6 +65,14 @@ body {
     vertical-align: middle;
     border: 1px solid #aaa;
     padding: 8px;
+}
+
+.emoji.animated-1 {
+    animation: emoji_background 0.5s ease-out;
+}
+
+.emoji.animated-2 {
+    animation: emoji_background_alt 0.5s ease-out;
 }
 
 .emoji .symbol {
