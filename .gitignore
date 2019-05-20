@@ -1,7 +1,7 @@
 # Ignore config files
 
 **/appsettings.json
-wwwroot/*
+wwwroot/
 !wwwroot/.gitkeep
 node_modules
 dist/
