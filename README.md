@@ -1,7 +1,8 @@
 # matrix-emoji-tracker
 
 Graphs the most commonly used emoji from the perspective of a Matrix homeserver. Largely inspired 
-by https://github.com/mroth/emojitracker (thanks mroth!)
+by the idea of https://github.com/mroth/emojitracker, and associated blog posts (thanks mroth!) - 
+this project is a ground-up implementation of the idea, designed more for Matrix.
 
 Similar to the original emojitracker, this is designed to deal with large volumes of traffic and the 
 unique challenges of Matrix. Due to the federated nature of Matrix, this cannot possibly represent
