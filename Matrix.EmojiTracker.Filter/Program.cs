@@ -38,7 +38,6 @@ namespace Matrix.EmojiTracker.Filter
 
             StartRedis();
 
-            // TODO: Read stream position from database somewhere
             string eventStreamPosition = _redisDb.StringGet(StreamPositionCacheKey);
             if (string.IsNullOrWhiteSpace(eventStreamPosition)) eventStreamPosition = StreamPosition.LATEST;
             StartReplicationAsync(eventStreamPosition);

@@ -8,6 +8,14 @@ var $ = require("jquery");
 var EMOJI_MAP = {};
 var ORDERED_EMOJI = [];
 var EMOJI_IMG_MAP = {};
+var SELECTORS_CACHE = {};
+
+// This is incremented later on in the handler
+var msgsIn = 0;
+setInterval(() => {
+    console.log("Handled " + msgsIn + " messages in ~1000ms");
+    msgsIn = 0;
+}, 1000);
 
 $.get("/api/v1/values").then(vals => {
     EMOJI_MAP = vals;
@@ -16,7 +24,7 @@ $.get("/api/v1/values").then(vals => {
     startWebsocket();
 }).catch(err => {
     console.error(err);
-    $(".emoji-container").html("<p class='error'>Failed to load emoji</p>");
+    document.getElementById("emoji-container").innerHTML = "<p class='error'>Failed to load emoji</p>";
 });
 
 function sortMap() {
@@ -35,12 +43,20 @@ function startWebsocket() {
 }
 
 function handleWsMessage(event) {
+    msgsIn++;
     var parts = event.data.split("|");
-    var symbol = parts[0];
-    var count = Number(parts[1]);
-    EMOJI_MAP[symbol] += count;
-    updateCount(symbol, EMOJI_MAP[symbol]);
-    console.log("Updated " + symbol);
+    var symbol;
+    for (var part of parts) {
+        if (!symbol) {
+            symbol = part;
+            continue;
+        }
+        
+        var count = Number(part);
+        EMOJI_MAP[symbol] += count;
+        updateCount(symbol, EMOJI_MAP[symbol]);
+        symbol = null;
+    }
 }
 
 function renderEmoji() {
@@ -48,33 +64,27 @@ function renderEmoji() {
     for (var pair of ORDERED_EMOJI) {
         var symbol = pair.symbol;
         var count = pair.count;
-        var encSymbol = safeTagsReplace(symbol);
-        html += "<div class='emoji' id='emoji-" + encSymbol + "'>" + renderEmojiElement(symbol, count) + "</div>";
+        html += "<div class='emoji' id='emoji-" + symbol + "'>" + renderEmojiElement(symbol, count) + "</div>";
     }
-    $(".emoji-container").html(html);
+    document.getElementById("emoji-container").innerHTML = html;
 }
 
 function updateCount(symbol, count) {
-    var encSymbol = safeTagsReplace(symbol);
-    $("#emoji-" + encSymbol).html(renderEmojiElement(symbol, count));
+    if (!SELECTORS_CACHE[symbol]) {
+        var selector = null;
+        var children = document.getElementById("emoji-" + symbol).childNodes;
+        for (var child of children) {
+            if (child.className === 'count') {
+                selector = child;
+                break;
+            }
+        }
+        if (!selector) return;
+        SELECTORS_CACHE[symbol] = selector;
+    }
+    SELECTORS_CACHE[symbol].textContent = count;
 }
 
 function renderEmojiElement(symbol, count) {
     return "<span class='symbol'>" + EMOJI_IMG_MAP[symbol] + "</span><span class='count'>" + count + "</span>";
-}
-
-// UTILS
-
-var tagsToReplace = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;'
-};
-
-function replaceTag(tag) {
-    return tagsToReplace[tag] || tag;
-}
-
-function safeTagsReplace(str) {
-    return str.replace(/[&<>]/g, replaceTag);
 }
