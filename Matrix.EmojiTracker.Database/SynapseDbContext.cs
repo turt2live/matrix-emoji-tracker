@@ -1,7 +1,7 @@
 ﻿using Matrix.EmojiTracker.Database.SynapseModels;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-using Serilog.AspNetCore;
+using Serilog.Extensions.Logging;
 
 namespace Matrix.EmojiTracker.Database
 {
@@ -11,7 +11,7 @@ namespace Matrix.EmojiTracker.Database
         public static string DefaultConnectionString { get; set; }
         private static readonly SerilogLoggerFactory LoggerFactory = new SerilogLoggerFactory(Log.ForContext<SynapseDbContext>());
 
-        public DbQuery<EventJson> EventsJson { get; set; }
+        public DbSet<EventJson> EventsJson { get; set; }
 
         public SynapseDbContext() : this(DefaultConnectionString) { }
 
