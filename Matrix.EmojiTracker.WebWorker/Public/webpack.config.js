@@ -1,7 +1,7 @@
 var path = require('path');
 var HtmlWebpackPlugin = require("html-webpack-plugin");
 var MiniCssExtractPlugin = require("mini-css-extract-plugin");
-var CleanWebpackPlugin = require('clean-webpack-plugin');
+var { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
     entry: "./index.js",
@@ -29,7 +29,7 @@ module.exports = {
         }),
         new HtmlWebpackPlugin({
             hash: true,
-            inject: false,
+            inject: true,
             template: './index.html',
             filename: 'index.html' 
         }),
