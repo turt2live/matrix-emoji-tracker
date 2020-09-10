@@ -55,8 +55,8 @@ namespace Matrix.EmojiTracker.Filter
 
             var synapseConfig = _config.GetSection("Synapse");
 
-            await replication.ConnectTcp(synapseConfig.GetValue<string>("replicationHost"),
-                synapseConfig.GetValue<int>("replicationPort"));
+            await replication.ConnectRedis(synapseConfig.GetValue<string>("replicationRedisHost"),
+                synapseConfig.GetValue<int>("replicationRedisPort"), synapseConfig.GetValue<string>("replicationServerName"));
 
             _eventStream = replication.BindStream<EventStreamRow>();
             _eventStream.DataRow += Stream_DataRow;
