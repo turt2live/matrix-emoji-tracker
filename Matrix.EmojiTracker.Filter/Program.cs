@@ -39,13 +39,15 @@ namespace Matrix.EmojiTracker.Filter
             StartRedis();
 
             string eventStreamPosition = _redisDb.StringGet(StreamPositionCacheKey);
-            if (string.IsNullOrWhiteSpace(eventStreamPosition)) eventStreamPosition = StreamPosition.LATEST;
-            StartReplicationAsync(eventStreamPosition);
+
+            // TODO: Pull events in a stream gap, if needed
+
+            StartReplicationAsync();
 
             Console.ReadKey(true);
         }
 
-        private static async void StartReplicationAsync(string eventStreamPosition)
+        private static async void StartReplicationAsync()
         {
             var replication = new SynapseReplication();
             replication.ClientName = "EmojiTracker_FilterProc";
@@ -53,19 +55,12 @@ namespace Matrix.EmojiTracker.Filter
 
             var synapseConfig = _config.GetSection("Synapse");
 
-            await replication.Connect(synapseConfig.GetValue<string>("replicationHost"),
+            await replication.ConnectTcp(synapseConfig.GetValue<string>("replicationHost"),
                 synapseConfig.GetValue<int>("replicationPort"));
 
-            _eventStream = replication.ResumeStream<EventStreamRow>(eventStreamPosition);
+            _eventStream = replication.BindStream<EventStreamRow>();
             _eventStream.DataRow += Stream_DataRow;
             _eventStream.PositionUpdate += Stream_PositionUpdate;
-            replication.Error += Replication_Error;
-        }
-
-        private static void Replication_Error(object sender, string e)
-        {
-            if (e.Contains("stream events has fallen behind"))
-                _eventStream.ForcePosition(StreamPosition.LATEST);
         }
 
         private static void Stream_PositionUpdate(object sender, string e)
